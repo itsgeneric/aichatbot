@@ -31,6 +31,10 @@ AI Based Chatbot that analyzes Any Website.
 - Chatbot interactions are logged in the database.
 - A Follow-Up feature as mentioned before is implemented.
 
+## Project Demo
+
+https://github.com/user-attachments/assets/7f5dc726-0786-4e22-8d3d-7916f46fac7e
+
 ## Installation Procedure
 - Clone the Repository
 - Install the required Python libraries as seen in requirements.txt
