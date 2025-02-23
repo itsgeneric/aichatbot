@@ -17,10 +17,9 @@ AI Based Chatbot that analyzes Any Website.
 
 ## Flowchart & Process Diagram
 
-![Flowchart](https://github.com/user-attachments/assets/6b9b11e8-b086-4311-a77e-fce394376add)
+![Flowchart](https://github.com/user-attachments/assets/c23a68eb-b07a-4cc8-a4af-7b509d4fcd9b)
 
-![Process Diagram](https://github.com/user-attachments/assets/c9b66396-ec4c-4c25-a3ae-71ac02dbe440)
-
+![Process Diagram](https://github.com/user-attachments/assets/b890015d-84a6-41a2-a987-704b6ebae7f2)
 
 ## Data Privacy
 - None of the data entered by the user except for the URL is stored in any database.
