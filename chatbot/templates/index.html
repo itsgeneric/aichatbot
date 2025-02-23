@@ -1,0 +1,179 @@
+<!-- This is a basic HTML file with some styling and scripting to make it look like a chatbot conversation.
+The script processes the user input, sends it to the backend and then shows the response accordingly.
+The styling is basic with colors being alternative in order to differentiate chatbot responses and user responses.
+The input and output is parsed into JSON.
+
+This file accompanies app.py which can be found in the main directory of the project. This file deals with frontend only.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Chatbot</title>
+    <style>
+        /*Basic styling to make the conversation look like a chatbot conversation.
+        The styling has been implemented after several runs of trial and error.
+        We shall use flexbox throughout to make the alignment simpler. */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightgray;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /*Full viewport height */
+        }
+        .chat-container {
+            width: 600px;
+            height: 700px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column; /*Content is stacked vertically.*/
+            overflow: hidden;
+        }
+        .chat-header {
+            background: blue;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto; /*Support vertical scrolling inside the chat body*/
+        }
+        .chat-footer {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: lightgray;
+        }
+        .chat-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid gray;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .chat-footer .buttons {
+            display: flex;
+            flex-wrap: wrap; /*Buttons can wrap and go to the next line */
+            gap: 10px;
+        }
+        .chat-footer button {
+            padding: 10px 20px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1 1 calc(33.33% - 10px); /* Aligning the 3 buttons on the bottom of the screen */
+        }
+        .message {
+            margin-bottom: 15px; /*Space below each message */
+        }
+        .message.user {
+            text-align: right; /* Align user messages to the right */
+        }
+        .message.bot {
+            text-align: left; /* Align bot messages to the left */
+        }
+        .message.bot .content {
+            background: lightgray;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block; /*Making the content fit inside the message container */
+            max-width: 80%;
+        }
+        .message.user .content {
+            background: blue;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container"> <!-- Container for the main chat -->
+        <div class="chat-header">
+            <h2>Website Chatbot</h2> <!-- Header with the name of the chatbot -->
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="message bot">
+                <div class="content">Hi! Please enter the website URL.</div> <!-- The first bot message -->
+            </div>
+        </div>
+        <div class="chat-footer">
+            <!-- Text input field -->
+            <input type="text" id="user-input" placeholder="Enter website URL..." onkeypress="handleKeyPress(event)">
+
+            <!-- All the bot functionalities are mapped to buttons for better understanding from the user side -->
+            <div class="buttons">
+                <button onclick="sendMessage('Get Title')">Get Title</button>
+                <button onclick="sendMessage('Describe Website')">Describe Website</button>
+                <button onclick="sendMessage('Describe Technical')">Describe Technical</button>
+                <button onclick="sendMessage('Get Headings')">Get Headings</button>
+                <button onclick="sendMessage('Get Links')">Get Links</button>
+                <button onclick="sendMessage('Get Word Count')">Get Word Count</button>
+                <button onclick="sendMessage('exit')">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //Simple JavaScript to handle the user input, send it to the backend app.py and show the responses.
+        function sendMessage(message)
+        {
+            const userInput = document.getElementById("user-input");
+            const chatBody = document.getElementById("chat-body");
+            const inputText = message || userInput.value;
+
+            //Adding the user input to the chat body so that it looks like a conversation
+            chatBody.innerHTML += `
+                <div class="message user">
+                    <div class="content">${inputText}</div>
+                </div>
+            `;
+
+            // Send request to backend after setting the content type as JSON
+            fetch("/ask", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    input: inputText,
+                }),
+            })
+            .then((response) => response.json()) //Parse the response into JSON
+            .then((data) => {
+                if (data.response) {
+                    // Add bot response to chat
+                    chatBody.innerHTML += `
+                        <div class="message bot">
+                            <div class="content">${data.response}</div>
+                        </div>
+                    `;
+                    chatBody.scrollTop = chatBody.scrollHeight; //Adding a scroll function to the latest chats
+                }
+            })
+            // Clear input field
+            if (!message) userInput.value = "";
+        }
+        // Let enter key be the trigger point to send the message
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
